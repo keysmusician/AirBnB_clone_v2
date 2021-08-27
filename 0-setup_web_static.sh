@@ -3,7 +3,7 @@
 
 # Install Nginx
 apt update
-apt -y install nginx
+apt install -y nginx
 
 # Create static content
 mkdir -p /data/web_static/releases/test/ /data/web_static/shared/

@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
-# Configures web servers for the deployment of static content
+# Sets up your web servers for the deployment of web_static
+apt-get update
+apt-get install -y nginx
+mkdir -p /data/web_static/releases/test/
+mkdir -p /data/web_static/shared/
+echo "Holberton School" > /data/web_static/releases/test/index.html
+ln -sf /data/web_static/releases/test/ /data/web_static/current
+chown -R ubuntu /data/
+chgrp -R ubuntu /data/
 
-# Install Nginx
-apt update
-apt install -y nginx
-
-# Create static content
-mkdir -p /data/web_static/releases/test/ /data/web_static/shared/
-echo "Holberton School Air BnB Clone 0x03. Web static test" > \
-/data/web_static/releases/test/index.html
-ln -sf /data/web_static/current /data/web_static/releases/test/
-chown -R ubuntu:ubuntu /data/
-
-# Configure Nginx
-cat > /etc/nginx/sites-available/default <<"EOF"
-server {
-    listen 80;
+printf %s "server {
+    listen 80 default_server;
     listen [::]:80 default_server;
-    root /var/www/html;
-    index index.html;
     add_header X-Served-By $HOSTNAME;
+    root   /var/www/html;
+    index  index.html index.htm;
     location /hbnb_static {
-        alias /data/web_static/current/;
+        alias /data/web_static/current;
+        index index.html index.htm;
     }
-}
-EOF
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+    error_page 404 /404.html;
+    location /404 {
+      root /var/www/html;
+      internal;
+    }
+}" > /etc/nginx/sites-available/default
 
-# Launch nginx
 service nginx restart

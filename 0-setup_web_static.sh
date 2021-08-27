@@ -15,6 +15,10 @@ chown -R ubuntu:ubuntu /data/
 # Configure Nginx
 cat > /etc/nginx/sites-available/default <<"EOF"
 server {
+    listen 80;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html;
     add_header X-Served-By $HOSTNAME;
     location /hbnb_static {
         alias /data/web_static/current/;

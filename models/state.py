@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """`State` class definition."""
+from models import storage
 from models.base_model import BaseModel, Base
+from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.city import City
 
 
 class State(BaseModel, Base):

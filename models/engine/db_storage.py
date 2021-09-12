@@ -1,19 +1,20 @@
-'''DBStorage engine'''
+#!/usr/bin/python3
+"""Database storage engine class definition."""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
 
-from models.base_model import BaseModel, Base
-from models.user import User
-from models.place import Place
-from models.state import State
-from models.city import City
 from models.amenity import Amenity
+from models.base_model import Base
+from models.city import City
+from models.place import Place
 from models.review import Review
+from models.state import State
+from models.user import User
 
 
 class DBStorage:
-    '''Database storage engine'''
+    """Database storage engine."""
     __engine = None
     __session = None
     classes = [
@@ -37,7 +38,7 @@ class DBStorage:
             Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
-        '''Return all objects from database depending on class name'''
+        """Return all objects from database depending on class name"""
         all_dict = {}
         object_list = []
         if cls:
@@ -50,26 +51,26 @@ class DBStorage:
             all_dict[key] = obj
         return all_dict
 
-    def new(self, obj):
-        '''Add object to database session'''
-        self.__session.add(obj)
-
-    def save(self):
-        '''Commit changes to the current session'''
-        self.__session.commit()
+    def close(self):
+        """Close the session"""
+        self.__session.close()
 
     def delete(self, obj=None):
-        '''Delete from session'''
+        """Delete from session"""
         if obj:
             self.__session.delete(obj)
 
+    def new(self, obj):
+        """Add object to database session"""
+        self.__session.add(obj)
+
     def reload(self):
-        '''Create tables in the database'''
+        """Create tables in the database"""
         Base.metadata.create_all(self.__engine)
         Session = scoped_session(sessionmaker(
             bind=self.__engine, expire_on_commit=False))
         self.__session = Session()
 
-    def close(self):
-        '''Close the session'''
-        self.__session.close()
+    def save(self):
+        """Commit changes to the current session"""
+        self.__session.commit()

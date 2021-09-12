@@ -1,15 +1,15 @@
 #!/usr/bin/python3
-"""This module defines a class to manage file storage for hbnb clone"""
+"""File storage engine class definition."""
 import json
 
 
 class FileStorage:
-    """This class manages storage of hbnb models in JSON format"""
+    """Manage storage of hbnb models in JSON format."""
     __file_path = 'file.json'
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
+        """Return a dictionary of models currently in storage."""
         if cls is None:
             return FileStorage.__objects
         new_dict = {}
@@ -21,21 +21,23 @@ class FileStorage:
         #  if isinstance(value, cls)}
         return new_dict
 
+    def close(self):
+        self.reload()
+
+    def delete(self, obj=None):
+        """Delete `obj` from `__objects`."""
+        if obj:
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            if key in self.__objects:
+                del self.__objects[key]
+            self.save()
+
     def new(self, obj):
-        """Adds new object to storage dictionary"""
+        """Add a new object to storage dictionary."""
         self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
-    def save(self):
-        """Saves storage dictionary to file"""
-        with open(FileStorage.__file_path, 'w') as f:
-            temp = {}
-            temp.update(FileStorage.__objects)
-            for key, val in temp.items():
-                temp[key] = val.to_dict()
-            json.dump(temp, f)
-
     def reload(self):
-        """Loads storage dictionary from file"""
+        """Load storage dictionary from a file."""
         from models.base_model import BaseModel
         from models.user import User
         from models.place import Place
@@ -58,10 +60,11 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
-    def delete(self, obj=None):
-        '''Deletes obj from __objects'''
-        if obj:
-            key = "{}.{}".format(obj.__class__.__name__, obj.id)
-            if key in self.__objects:
-                del self.__objects[key]
-            self.save()
+    def save(self):
+        """Write storage dictionary to a file."""
+        with open(FileStorage.__file_path, 'w') as f:
+            temp = {}
+            temp.update(FileStorage.__objects)
+            for key, val in temp.items():
+                temp[key] = val.to_dict()
+            json.dump(temp, f)

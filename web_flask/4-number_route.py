@@ -29,6 +29,7 @@ def python_text(text):
     """Display varaible text."""
     return 'Python ' + text.replace('_', ' ')
 
+
 @app.route('/number/<int:n>', strict_slashes=False)
 def number(n):
     """Display variable text if it is an integer."""

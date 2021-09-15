@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-Starts Flask web app
-"""
+"""Starts a Flask web application."""
 from flask import Flask, render_template
 from models import storage
 from models.state import State
@@ -12,21 +10,21 @@ app.url_map.strict_slashes = False
 
 @app.teardown_appcontext
 def tear_down(self):
-    """Removes the current SQLAlchemy session"""
+    """Close the open storage engine."""
     storage.close()
 
 
 @app.route('/states')
 def states():
-    """Displays html page for states"""
-    return render_template('9-states.html', state_list=storage.all(State))
+    """Return a page of all `States`."""
+    return render_template('9-states.html', all_states=storage.all(State))
 
 
 @app.route('/states/<id>')
 def states_ids(id):
     """Displays html for states and id"""
     try:
-        state = storage.all()["State.{}".format(id)]
+        state = storage.all(State)["State.{}".format(id)]
         return render_template('9-states.html', state=state)
     except KeyError:
         return render_template('9-states.html')

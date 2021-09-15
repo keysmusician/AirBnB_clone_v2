@@ -14,10 +14,10 @@ def teardown(self):
 
 
 @app.route('/cities_by_states', strict_slashes=False)
-def list_states():
-    """Return a page of all `Sates`, sorted."""
-    states = storage.all(State)
-    return render_template('7-states_list.html', states=states)
+def cities_by_state():
+    """Return a page of all `Cities` grouped by `State`, sorted."""
+    states = [state for state in storage.all(State).values()]
+    return render_template('8-cities_by_states.html', states=states)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

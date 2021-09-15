@@ -41,6 +41,11 @@ class BaseModel:
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
         return '[{}] ({}) {}'.format(cls, self.id, self.to_dict())
 
+    def delete(self):
+        """Delete the current instance from storage."""
+        from models import storage
+        storage.delete(self)
+
     def save(self):
         """Update `updated_at` with current time when instance is modified."""
         from models import storage
@@ -59,8 +64,3 @@ class BaseModel:
         if hasattr(self, '_sa_instance_state'):
             del dictionary['_sa_instance_state']
         return dictionary
-
-    def delete(self):
-        """Delete the current instance from storage."""
-        from models import storage
-        storage.delete(self)

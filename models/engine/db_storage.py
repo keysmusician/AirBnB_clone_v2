@@ -3,28 +3,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
-
-from models.amenity import Amenity
 from models.base_model import Base
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
 
 
 class DBStorage:
     """Database storage engine."""
     __engine = None
     __session = None
-    classes = [
-        User,
-        City,
-        State,
-        Place,
-        Amenity,
-        Review
-    ]
 
     def __init__(self):
         connection = 'mysql+mysqldb://{}:{}@{}/{}'
@@ -38,13 +23,30 @@ class DBStorage:
             Base.metadata.drop_all(bind=self.__engine)
 
     def all(self, cls=None):
-        """Return all objects from database depending on class name"""
+        """
+        Return all objects from database, optionally filtered by class name.
+
+        """
+        from models.amenity import Amenity
+        from models.city import City
+        from models.place import Place
+        from models.review import Review
+        from models.state import State
+        from models.user import User
         all_dict = {}
         object_list = []
+        classes = [
+            User,
+            City,
+            State,
+            Place,
+            Amenity,
+            Review
+        ]
         if cls:
             object_list = self.__session.query(cls).all()
         else:
-            for cs in DBStorage.classes:
+            for cs in classes:
                 object_list += self.__session.query(cs)
         for obj in object_list:
             key = "{}.{}".format(obj.__class__.__name__, str(obj.id))

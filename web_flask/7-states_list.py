@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.teardown_appcontext
 def teardown(self):
-    """Close the open file storage engine."""
+    """Close the open storage engine."""
     storage.close()
 
 

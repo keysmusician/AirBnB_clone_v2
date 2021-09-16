@@ -16,13 +16,13 @@ def tear_down(self):
 
 @app.route('/states')
 def states():
-    """Return a page of all `States`."""
+    """Return a page of all states."""
     return render_template('9-states.html', all_states=storage.all(State))
 
 
 @app.route('/states/<id>')
 def states_ids(id):
-    """Displays html for states and id"""
+    """Return a page for all cities of a given state."""
     try:
         state = storage.all(State)["State.{}".format(id)]
         return render_template('9-states.html', state=state)

@@ -17,6 +17,7 @@ class State(BaseModel, Base):
     if type(storage) == FileStorage:
         @property
         def cities(self):
+            from models import storage
             """Return the list of cities matching this state."""
             return [city for city in storage.all(City).values()
                     if city.state_id == self.id]

@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-Starts Flask web app
-"""
+"""Starts a Flask web application."""
 from flask import Flask, render_template
 from models import storage
 from models.state import State
@@ -13,15 +11,15 @@ app.url_map.strict_slashes = False
 
 @app.teardown_appcontext
 def tear_down(self):
-    """Removes the current SQLAlchemy session"""
+    """Close the open storage engine."""
     storage.close()
 
 
 @app.route('/hbnb_filters')
 def hbnb_filters():
-    """Displays html page with city/state filters"""
+    """Return a page with of State/Amenity filters."""
     return render_template('10-hbnb_filters.html',
-                           state_list=storage.all(State),
+                           states=storage.all(State),
                            amenities=storage.all(Amenity))
 
 
